@@ -1,4 +1,8 @@
-한국어 형태소 분석기가 적용된 ElasticSearch 5.1.1 베이스 도커 이미지입니다.
+한국어 형태소 분석기가 적용된 ElasticSearch 5.5 베이스 도커 이미지입니다.
+
+```sh
+~/es-base $ docker build --tag es-base:5.5-with-arirang .
+```
 
 ```sh
 ~/es-base $ docker run -d \
@@ -6,7 +10,7 @@
     -p 9200:9200 \
     -p 9300:9300 \
     -v `pwd`/es-data:/usr/share/elasticsearch/data \
-    appkr/es-base:5.1.1
+    es-base:5.5-with-arirang
 ```
 
 ## Test
@@ -50,19 +54,7 @@ ES SDK 또는 REST API를 이용하면 대부분의 데이터 타입은 자동�
         },
         "name_of_the_property_holding_korean": {
           "type" : "string",
-          "analyzer": "korean"
-        }
-      }
-    }
-  },
-  "settings": {
-    "index":{
-      "analysis":{
-        "analyzer":{
-          "korean":{
-            "type":"custom",
-            "tokenizer":"mecab_ko_standard_tokenizer"
-          }
+          "analyzer": "arirang_analyzer"
         }
       }
     }
@@ -74,7 +66,7 @@ ES SDK 또는 REST API를 이용하면 대부분의 데이터 타입은 자동�
 형태소 분석기(Mecab) 적용 결과는 다음과 같이 확인할 수 있습니다.
 
 ```bash
-~/es-base $ curl -X GET "http://localhost:9200/name_of_the_index/_analyze?analyzer=korean&pretty=&text=대법관은 대법원장의 제청으로 국회의 동의를 얻어 대통령이 임명한다. 국회의원과 정부는 법률안을 제출할 수 있다. 각급 선거관리위원회의 조직·직무범위 기타 필요한 사항은 법률로 정한다."
+~/es-base $ curl -X GET "http://localhost:9200/_analyze?analyzer=arirang_analyzer&pretty=&text=대법관은 대법원장의 제청으로 국회의 동의를 얻어 대통령이 임명한다. 국회의원과 정부는 법률안을 제출할 수 있다. 각급 선거관리위원회의 조직·직무범위 기타 필요한 사항은 법률로 정한다."
 ```
 
 ### List Properties
@@ -182,4 +174,4 @@ ES SDK 또는 REST API를 이용하면 대부분의 데이터 타입은 자동�
 }' "http://localhost:9200/name_of_the_index/name_of_the_type/_search"
 ```
 
-이상의 내용은 [미리 만들어 둔 포스트맨 콜렉션](https://raw.githubusercontent.com/appkr/es-base/master/ElasticSearch-MecabTest.postman_collection.json)을 이용하면 편리하게 확인해 볼 수 있습니다.
+이상의 내용은 [미리 만들어 둔 포스트맨 콜렉션](https://www.getpostman.com/collections/11321fc3356d122acb13)을 이용하면 편리하게 확인해 볼 수 있습니다.
